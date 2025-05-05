@@ -1,68 +1,104 @@
-# 📝 Write-Only Text Editor
+# 📝 Word-Based Text Editor (CLI Edition)
+Welcome to the nerdiest, stack-powered, queue-fueled text editor you didn’t know you needed. Built with good old C++, this command-line tool lets you enter words one at a time, supports undo/redo like a champ, and even saves your poetic nonsense into a file!
 
-A simple terminal-based text editor built in C++ with basic **undo**, **redo**, and **history** features using custom stack and queue implementations.
+## 📦 Features
+- ✍️ Word-by-word input – Because who wants paragraphs anyway?
 
-## ⚙️ Features
+- 🔁 Undo/Redo support – Oops? No worries. Redo your undo or undo your redo.
 
-- ✅ Add text line by line
-- 🔁 Undo last action with `:undo`
-- 🔄 Redo undone action with `:redo`
-- 📜 View history of undo/redo actions with `:history`
-- 💾 Save written content to a text file with `:exit`
+- 🕒 History tracking – See all your questionable decisions, listed clearly.
 
-## 🧱 Data Structures Used
+- 💾 Save to file – Don’t lose your masterpiece.
 
-- `Stack<T>` – LIFO (Last In, First Out)
-- `Queue<T>` – FIFO (First In, First Out)
+- 🧠 Custom Stack & Queue structs – No STL stack/queue here. We went full DIY.
 
-No STL stack or queue used. Everything’s hand-coded for the grind. 💪
+## 🛠️ Tech Stuff
+## Language
+- C++17 (or newer)
 
-## 🚀 How to Run
+## Dependencies
+- Standard C++ Libraries only. No external dependencies, no nonsense.
 
-1. **Compile the code**
-   ```bash
-   g++ -o text_editor text_editor.cpp
-   ```
+## Data Structures Used
+- `Stack<T>` – Handles undo/redo operations.
 
-2. **Run the executable**
-    ```bash
-    ./text_editor
-    ```
+- `Queue<T>` – Stores undo and redo history logs.
 
-3. **Start typing. Use these commands anytime:**
-    - `:undo` - undo the last line
-    - `:redo` - redo the last undone line
-    - `:history` - show undo/redo history
-    - `:exit` - save and exit
+## 🚀 How It Works
+Run the program and just start typing words. Hit `Enter` after each word or command.
 
-**💡 Example Usage**
-```bash
-Welcome to the Write-Only Text Editor
-Start typing below.
+## Available Commands
+| Command    | Description                         |
+| ---------- | ----------------------------------- |
+| `:undo`    | Undoes the last word entered        |
+| `:redo`    | Redoes the last undone word         |
+| `:history` | Displays undo and redo history logs |
+| `:exit`    | Ends the session and saves the file |
+
+After `:exit`, you’ll be prompted for a filename. If you ghost the prompt, we’ll save your brilliance in `output.txt`.
+
+## 🧪 Example Session
+```
+Welcome to the Word-Based Text Editor
+Type words separated by spaces. Press Enter after each word or command.
 Commands: ':undo', ':redo', ':history', ':exit'
 
-> This is my first line.
-> This is my second line.
+> Hello
+> world
 > :undo
-Undid: This is my second line.
+Undid: "world"
 > :redo
-Redid: This is my second line.
+Redid: "world"
 > :history
 
-Undo History:
-  Undo: This is my second line.
+--- Undo History (Oldest First) ---
+ Undo: "world"
 
-Redo History:
-  Redo: This is my second line.
+--- Redo History (Oldest First) ---
+ Redo: "world"
+-----------------------------------
 
 > :exit
-Enter filename to save: notes.txt
-Saved to 'notes.txt'.
+Exit command received. Saving your work...
+Enter filename to save: epic.txt
+Content saved to 'epic.txt'.
+
 ```
 
-**🛠️ Future Improvements**
-- Load existing files
-- Word/line editing
-- Command shortcuts
-- Persistent history
-**Built from scratch. No excuses. Just execution. 🧠⚔️**
+## 💡 Why?
+Because we can. And because Stack and Queue deserve to shine outside boring CS homework.
+
+## ⚠️ Known Limitations
+- It’s word-based only. You can’t backspace mid-word. Don’t mess up!
+
+- `:undo` doesn't support batching. One word at a time.
+
+- No GUI. Just glorious text mode. Deal with it.
+
+## 🧹 File Structure
+All logic is inside one clean `.cpp` file:
+
+- Stack/Queue structs
+
+- Word input handler
+
+- Undo/redo logic
+
+- History logger
+
+- File output handler
+
+## 🧠 Ideal For
+- CS students flexing data structure muscles 💪
+
+- CLI lovers who don’t fear the terminal
+
+- People with too much free time
+
+---
+## 🐛 Contributing
+Found a bug? Wanna add cool new commands like `:clear` or `:save?` Fork it, tweak it, and submit a pull request. Or don’t. Be mysterious.
+
+---
+## 📜 License
+MIT – Go wild. Just don’t sell this to billion-dollar companies and act like you invented Word.
