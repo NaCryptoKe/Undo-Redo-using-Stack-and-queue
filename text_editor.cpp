@@ -123,7 +123,7 @@ int main() {
                 displayCurrentContent(content);    // Display content on the same line
                 cout << " ";                  // Add a space to clear any leftover characters
                 cout << flush;
-
+                continue;
         } else if (word == ":redo") {
             // Redo command: Restore the last undone word
             if (!undoStack.empty()) {
