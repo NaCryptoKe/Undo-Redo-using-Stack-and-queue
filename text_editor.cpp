@@ -28,13 +28,12 @@ struct Stack {
     void clear() { data.clear(); }                      // Clear all elements in the stack
 };
 
-// Queue Implementation (Generic queue using vector)
+// Queue Implementation using struct
 template <typename T>
-class Queue {
-private:
+struct Queue {
     vector<T> data; // Internal storage for queue elements
     size_t head = 0; // Index of the front element
-public:
+
     void push(const T& value) { data.push_back(value); } // Add element to the queue
     void pop() { if (head < data.size()) head++; }       // Remove front element from the queue
     T front() const { 
@@ -116,10 +115,15 @@ int main() {
                 content.pop_back();
                 undoStack.push(lastWord);
                 undoHistory.push("Undo: \"" + lastWord + "\"");
-                cout << "Undid: \"" << lastWord << "\"\n"; // Print only the undone word
+                cout << "Undid: \"" << lastWord << "\"\n"; // Print the undone word on a new line
             } else {
                 cout << "Nothing to undo.\n"; // Newline after message
             }
+                cout << "> ";                 // Start the editor on a new line
+                displayCurrentContent(content);    // Display content on the same line
+                cout << " ";                  // Add a space to clear any leftover characters
+                cout << flush;
+
         } else if (word == ":redo") {
             // Redo command: Restore the last undone word
             if (!undoStack.empty()) {
