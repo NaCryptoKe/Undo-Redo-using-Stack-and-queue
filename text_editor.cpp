@@ -115,15 +115,18 @@ int main() {
                 content.pop_back();
                 undoStack.push(lastWord);
                 undoHistory.push("Undo: \"" + lastWord + "\"");
-                cout << "Undid: \"" << lastWord << "\"\n"; // Print the undone word on a new line
+                
+                cout << "Undid: \"" << lastWord << "\"\n"; // <<== Move this BEFORE prompt + content
             } else {
                 cout << "Nothing to undo.\n"; // Newline after message
             }
-                cout << "> ";                 // Start the editor on a new line
-                displayCurrentContent(content);    // Display content on the same line
-                cout << " ";                  // Add a space to clear any leftover characters
-                cout << flush;
-                continue;
+        
+            // Show prompt and content after undo message
+            cout << "> ";
+            displayCurrentContent(content);  // Display content on the same line
+            cout << " ";                     // Clear trailing chars
+            cout << flush;
+            continue;
         } else if (word == ":redo") {
             // Redo command: Restore the last undone word
             if (!undoStack.empty()) {
@@ -136,23 +139,29 @@ int main() {
             } else {
                 cout << "Nothing to redo.\n"; // Newline after message
             }
+
+            // Show prompt and content after undo message
+            cout << "> ";
+            displayCurrentContent(content);  // Display content on the same line
+            cout << " ";                     // Clear trailing chars
+            cout << flush;
+            continue;
         } else if (word == ":history") {
             // History command: Display undo and redo history
             showHistory(undoHistory, redoHistory); // showHistory includes its own formatting
+
+            // Show prompt and content after undo message
+            cout << "> ";
+            displayCurrentContent(content);  // Display content on the same line
+            cout << " ";                     // Clear trailing chars
+            cout << flush;
+            continue;
         } else {
             // Any other input is treated as a content word
             content.push_back(word); // Add word to content
             undoStack.clear(); // Clear undo stack after new input
             redoStack.clear(); // Clear redo stack after new input
             redoHistory.clear(); // Clear redo history after new input
-        }
-
-        // Display the prompt and current content
-        if (display_prompt_and_content) {
-            cout << "\r> ";                 // Print the prompt on the same line
-            displayCurrentContent(content);    // Display content on the same line
-            cout << " ";                  // Add a space to clear any leftover characters
-            cout << flush;           // Ensure output is visible before waiting
         }
     }
 
