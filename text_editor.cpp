@@ -2,172 +2,186 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <stdexcept> // Required for std::out_of_range
+#include <stdexcept> // Required for out_of_range
 #include <sstream>   // Required for potential future enhancements or complex parsing if needed
-#include <limits>    // Required for std::numeric_limits
-#include <ios>       // Required for std::streamsize
-#include <ostream>   // Required for std::flush
+#include <limits>    // Required for numeric_limits
+#include <ios>       // Required for streamsize
+#include <ostream>   // Required for flush
 
-// Stack Implementation (Keep as is)
+using namespace std;
+
+// Stack Implementation using struct
+#include <vector>
+
+// Define a generic Stack struct
 template <typename T>
-class Stack {
-private:
-    std::vector<T> data;
-public:
-    void push(const T& value) { data.push_back(value); }
-    void pop() { if (!data.empty()) data.pop_back(); }
-    T top() const { if (!data.empty()) return data.back(); throw std::out_of_range("Stack is empty."); }
-    bool empty() const { return data.empty(); }
-    void clear() { data.clear(); }
+struct Stack {
+    vector<T> data; // Internal storage for stack elements
+
+    void push(const T& value) { data.push_back(value); } // Add element to the stack
+    void pop() { if (!data.empty()) data.pop_back(); }   // Remove top element from the stack
+    T top() const { 
+        if (!data.empty()) return data.back();          // Return top element
+        throw out_of_range("Stack is empty.");   // Throw exception if stack is empty
+    }
+    bool empty() const { return data.empty(); }         // Check if stack is empty
+    void clear() { data.clear(); }                      // Clear all elements in the stack
 };
 
-// Queue Implementation (Keep as is)
+// Queue Implementation (Generic queue using vector)
 template <typename T>
 class Queue {
 private:
-    std::vector<T> data;
-    size_t head = 0;
+    vector<T> data; // Internal storage for queue elements
+    size_t head = 0; // Index of the front element
 public:
-    void push(const T& value) { data.push_back(value); }
-    void pop() { if (head < data.size()) head++; }
-    T front() const { if (head < data.size()) return data[head]; throw std::out_of_range("Queue is empty."); }
-    bool empty() const { return head >= data.size(); }
-    void clear() { data.clear(); head = 0; }
-    std::vector<T> get_elements() const {
-        std::vector<T> elements;
-        for(size_t i = head; i < data.size(); ++i) elements.push_back(data[i]);
+    void push(const T& value) { data.push_back(value); } // Add element to the queue
+    void pop() { if (head < data.size()) head++; }       // Remove front element from the queue
+    T front() const { 
+        if (head < data.size()) return data[head];       // Return front element
+        throw out_of_range("Queue is empty.");         // Throw exception if queue is empty
+    }
+    bool empty() const { return head >= data.size(); }   // Check if queue is empty
+    void clear() { data.clear(); head = 0; }             // Clear all elements in the queue
+    vector<T> get_elements() const {                    // Get all elements from the queue
+        vector<T> elements;
+        for(size_t i = head; i < data.size(); ++i) 
+            elements.push_back(data[i]);
         return elements;
     }
 };
 
-// showHistory Function (Keep as is)
-void showHistory(const Queue<std::string>& undoHistory, const Queue<std::string>& redoHistory) {
-    std::cout << "\n--- Undo History (Oldest First) ---\n";
-    std::vector<std::string> undoItems = undoHistory.get_elements();
+// Function to display undo and redo history
+void showHistory(const Queue<string>& undoHistory, const Queue<string>& redoHistory) {
+    cout << "\n--- Undo History (Oldest First) ---\n";
+    vector<string> undoItems = undoHistory.get_elements();
     if (undoItems.empty()) {
-        std::cout << " (empty)\n";
+        cout << " (empty)\n";
     } else {
-        for (const auto& item : undoItems) std::cout << " " << item << "\n";
+        for (const auto& item : undoItems) cout << " " << item << "\n";
     }
-    std::cout << "\n--- Redo History (Oldest First) ---\n";
-     std::vector<std::string> redoItems = redoHistory.get_elements();
+    cout << "\n--- Redo History (Oldest First) ---\n";
+    vector<string> redoItems = redoHistory.get_elements();
     if (redoItems.empty()) {
-        std::cout << " (empty)\n";
+        cout << " (empty)\n";
     } else {
-         for (const auto& item : redoItems) std::cout << " " << item << "\n";
+        for (const auto& item : redoItems) cout << " " << item << "\n";
     }
-    std::cout << "-----------------------------------\n" << std::endl; // Keep endl here
+    cout << "-----------------------------------\n" << endl; // Keep endl here
 }
 
-// *** MODIFIED displayCurrentContent ***
-// Prints current content without a trailing newline
-void displayCurrentContent(const std::vector<std::string>& content) {
-     bool first = true;
-     for(const auto& word_part : content) {
-         if (!first) {
-             std::cout << " ";
-         }
-         std::cout << word_part;
-         first = false;
-     }
-     // No std::endl here anymore
+// Function to display the current content without a trailing newline
+void displayCurrentContent(const vector<string>& content) {
+    bool first = true;
+    for(const auto& word_part : content) {
+        if (!first) {
+            cout << " "; // Add space between words
+        }
+        cout << word_part; // Print each word
+        first = false;
+    }
+    // No endl here to keep the output on the same line
 }
 
-// *** MODIFIED main ***
 int main() {
-    std::vector<std::string> content;
-    Stack<std::string> undoStack;
-    Stack<std::string> redoStack;
-    Queue<std::string> undoHistory;
-    Queue<std::string> redoHistory;
+    vector<string> content; // Stores the current text content
+    Stack<string> undoStack; // Stack to store words for undo operations
+    Stack<string> redoStack; // Stack to store words for redo operations
+    Queue<string> undoHistory; // Queue to store undo history
+    Queue<string> redoHistory; // Queue to store redo history
 
-    std::cout << "Welcome to the Word-Based Text Editor\n";
-    std::cout << "Type words separated by spaces. Press Enter after each word or command.\n";
-    std::cout << "Commands: ':undo', ':redo', ':history', ':exit'\n\n";
+    // Display welcome message and instructions
+    cout << "Welcome to the Word-Based Text Editor\n";
+    cout << "Type words separated by spaces. Press Enter after each word or command.\n";
+    cout << "Commands: ':undo', ':redo', ':history', ':exit'\n\n";
 
     // Initial prompt
-    std::cout << "> ";
-    std::cout.flush(); // Ensure prompt is visible
+    cout << "> ";
+    cout.flush(); // Ensure prompt is visible
 
-    std::string word;
-    while (std::cin >> word) {
+    string word;
+    while (cin >> word) {
 
         bool display_prompt_and_content = true; // Flag to control display at the end
 
         if (word == ":exit") {
-            std::cout << "\nExit command received. Saving your work...\n";
+            // Exit command: Save work and terminate the program
+            cout << "\nExit command received. Saving your work...\n";
             display_prompt_and_content = false; // Don't display prompt after exit
             break;
         } else if (word == ":undo") {
+            // Undo command: Remove the last word and store it in undo stack
             if (!content.empty()) {
-                std::string lastWord = content.back();
+                string lastWord = content.back();
                 content.pop_back();
                 undoStack.push(lastWord);
                 undoHistory.push("Undo: \"" + lastWord + "\"");
-                std::cout << "Undid: \"" << lastWord << "\"\n"; // Newline after message
+                cout << "Undid: \"" << lastWord << "\"\n"; // Print only the undone word
             } else {
-                std::cout << "Nothing to undo.\n"; // Newline after message
+                cout << "Nothing to undo.\n"; // Newline after message
             }
         } else if (word == ":redo") {
+            // Redo command: Restore the last undone word
             if (!undoStack.empty()) {
-                std::string wordToRedo = undoStack.top();
+                string wordToRedo = undoStack.top();
                 undoStack.pop();
                 content.push_back(wordToRedo);
                 redoStack.push(wordToRedo);
                 redoHistory.push("Redo: \"" + wordToRedo + "\"");
-                std::cout << "Redid: \"" << wordToRedo << "\"\n"; // Newline after message
+                cout << "Redid: \"" << wordToRedo << "\"\n"; // Newline after message
             } else {
-                std::cout << "Nothing to redo.\n"; // Newline after message
+                cout << "Nothing to redo.\n"; // Newline after message
             }
         } else if (word == ":history") {
+            // History command: Display undo and redo history
             showHistory(undoHistory, redoHistory); // showHistory includes its own formatting
-            // We still want to show the current content and prompt after history
         } else {
             // Any other input is treated as a content word
-            content.push_back(word);
-            undoStack.clear();
-            redoStack.clear();
-            redoHistory.clear();
-            // Don't print anything here, let the end-of-loop logic handle it
+            content.push_back(word); // Add word to content
+            undoStack.clear(); // Clear undo stack after new input
+            redoStack.clear(); // Clear redo stack after new input
+            redoHistory.clear(); // Clear redo history after new input
         }
 
-        // *** Moved prompt and display logic to the end of the loop ***
+        // Display the prompt and current content
         if (display_prompt_and_content) {
-            std::cout << "> ";                 // Print the prompt
+            cout << "\r> ";                 // Print the prompt on the same line
             displayCurrentContent(content);    // Display content on the same line
-            std::cout << std::flush;           // Ensure output is visible before waiting
+            cout << " ";                  // Add a space to clear any leftover characters
+            cout << flush;           // Ensure output is visible before waiting
         }
     }
 
-    // --- Rest of main function remains the same ---
-
-    if (!std::cin.eof() && std::cin.fail()) {
-        std::cerr << "\nInput error occurred." << std::endl;
+    // Handle input errors
+    if (!cin.eof() && cin.fail()) {
+        cerr << "\nInput error occurred." << endl;
     }
 
-    std::cout << "\nYou've written " << content.size() << " word(s).\n";
+    // Display summary of written content
+    cout << "\nYou've written " << content.size() << " word(s).\n";
 
     if (content.empty()) {
-         std::cout << "No content to save.\n";
+         cout << "No content to save.\n";
          return 0;
     }
 
-    std::string filename;
-    std::cin.clear();
-    // Be careful with multiple ignore calls if issues persist. One is usually enough.
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    // Prompt user for filename to save content
+    string filename;
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    std::cout << "Enter filename to save: ";
-    std::getline(std::cin, filename);
+    cout << "Enter filename to save: ";
+    getline(cin, filename);
 
     if (filename.empty()) {
-        std::cout << "No filename provided. Using default 'output.txt'.\n";
+        cout << "No filename provided. Using default 'output.txt'.\n";
         filename = "output.txt";
     }
 
-    std::ofstream file(filename);
+    // Save content to file
+    ofstream file(filename);
     if (!file) {
-        std::cerr << "Failed to open file '" << filename << "' for writing.\n";
+        cerr << "Failed to open file '" << filename << "' for writing.\n";
         return 1;
     }
 
@@ -181,6 +195,6 @@ int main() {
     }
     file << '\n';
 
-    std::cout << "Content saved to '" << filename << "'.\n";
+    cout << "Content saved to '" << filename << "'.\n";
     return 0;
 }
